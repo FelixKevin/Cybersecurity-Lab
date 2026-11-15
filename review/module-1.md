@@ -20,16 +20,18 @@ Written in English on the structure of the Schrijfwijzer (chapters 9, 11, 12A an
 
 ## Requirements for `halden-srv01.ova` that this module adds
 
-- A web server on port 80 without encryption, serving a small "Halden & Co intranet" page (1.3, 1.4, 1.5).
-- SSH on port 22 with an account `consultant` and a password that students receive (1.5).
-- `sudo` rights for `consultant`, at least for `tcpdump` (1.5).
-- `tcpdump` installed (1.5).
+- A web server on port 80 without encryption, serving a small "Halden & Co intranet" page (1.3, 1.5, 1.6).
+- SSH on port 22 with an account `consultant` and a password that students receive (1.6).
+- `sudo` rights for `consultant`, at least for `tcpdump` (1.6).
+- `tcpdump` installed (1.6).
 - The module assumes the interface is called `enp0s3`; adjust the text to the real name.
 
 Module 0 says "you do not log in" on the server console. Module 1 introduces the account over SSH; that is consistent, but the password still has to reach students somehow.
 
 ## Decisions made while writing (confirm or change)
 
+- **Section 1.4 was split in two on request:** 1.4 ARP, DHCP and DNS up close; 1.5 TCP and TLS up close; tcpdump moved to 1.6.
+- **A hard exercise whose answer differs per student (H1) is accepted.**
 - **Exercises follow the variant for courses without programming (12A):** E1, E2, M1, M2, H1, @1, a case with three parts and three extra exercises. The programming variant (example input and output per exercise) does not fit lab work.
 - **The case exercises C1 to C3 are the portfolio deliverable** of this module (annotated captures plus a short note). Say so if the portfolio should be a separate assignment.
 - **E, M, H and @home use other small businesses** for context (N4), but students carry them out in their own lab, because there is no other data set.
@@ -41,9 +43,8 @@ Module 0 says "you do not log in" on the server console. Module 1 introduces the
 
 ## Open questions
 
-- 1.4 is the longest section (five protocols, about 600 words). Split into two sections, or keep as one?
 - 1.4, DHCP: on a reconnect Kali may send only Request and ACK. The text explains this, but a guaranteed full exchange would be better. Is there a reliable way to force a Discover?
-- 1.5: should students also learn `tcpdump -r` here, or is opening the file in Wireshark enough?
+- 1.6: should students also learn `tcpdump -r` here, or is opening the file in Wireshark enough?
 - H1 depends on which mirrors `apt update` contacts and on whether they use HTTP or HTTPS. The answer differs per student and per day. Acceptable for a Hard exercise?
 - Cross-reference to "Computer Networks" in 1.1 and 1.4: check the course name against the final curriculum (S2).
 
@@ -52,8 +53,9 @@ Module 0 says "you do not log in" on the server console. Module 1 introduces the
 - [NIET GETEST] 1.1, Your first capture: starting Wireshark as `kali` and capturing without extra permissions.
 - [NIET GETEST] 1.3: the request and response of the intranet page.
 - [NIET GETEST] 1.4: all commands and the number of packets they produce.
-- [CONTROLEREN] 1.5, Log in on the server: the account `consultant`, its password and sudo rights.
-- [NIET GETEST] 1.5, Capture in the terminal: the interface name and the output on `halden-srv01`.
+- [NIET GETEST] 1.5: all commands and the number of packets they produce.
+- [CONTROLEREN] 1.6, Log in on the server: the account `consultant`, its password and sudo rights.
+- [NIET GETEST] 1.6, Capture in the terminal: the interface name and the output on `halden-srv01`.
 
 ## What was checked
 

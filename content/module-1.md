@@ -303,11 +303,11 @@ Feedback C: Correct. The response is plaintext too (see 1.3).
 Feedback D: A capture shows only what travels over the network. Files that are never sent are not in it (see 1.3).
 ```
 
-## 1.4 Everyday protocols up close
+## 1.4 ARP, DHCP and DNS up close
 
-A workstation at Halden & Co that starts in the morning and opens one website uses five protocols before the page appears. You know them from Computer Networks as diagrams. Here you read each one in a capture, and you note what it gives away.
+A workstation at Halden & Co that starts in the morning cannot send anything useful yet. It first needs an address, the way to its neighbours and the address behind a name. Three protocols arrange that. You know them from Computer Networks as diagrams.
 
-For each protocol you do the same three things: start a capture, run the command that triggers the protocol, and apply the display filter.
+Here you read each one in a capture, and you note what it gives away. You do the same three things every time: start a capture, run the command that triggers the protocol, and apply the display filter.
 
 ### ARP: who has this address?
 
@@ -349,6 +349,51 @@ Display filter: `dns`. You see a query and a response. Open the query: the name 
 
 A list of the DNS queries of a workstation is close to a list of everything its user did that day.
 
+[NIET GETEST] All commands in 1.4 and the number of packets they produce, on the current Kali image in VirtualBox.
+
+What this means for you: none of these three protocols checks who is answering. In module 6 you abuse that, and in module 9 you write rules that notice the abuse.
+
+### Check yourself 1.4 – ARP, DHCP and DNS
+
+```text
+Sectie: 1.4
+Type: ordenen
+Vraag: Put the packets in the order a workstation sends or receives them when it requests an address with DHCP.
+Volgorde:
+  Discover
+  Offer
+  Request
+  ACK
+Feedback: The workstation asks who hands out addresses, a server offers one, the workstation requests it and the server confirms (see 1.4).
+
+Sectie: 1.4
+Type: koppelen
+Vraag: Match each protocol with the question it answers.
+Paren:
+  ARP → Which MAC address belongs to this IP address?
+  DHCP → Which IP address can I use?
+  DNS → Which IP address belongs to this name?
+Feedback: ARP links an IP address to a MAC address, DHCP hands out addresses and DNS translates names (see 1.4).
+
+Sectie: 1.4
+Type: meerkeuze
+Vraag: Kali sends the ARP request "Who has 10.20.30.10?". Which machines on `halden-lab` receive that packet? Choose one answer.
+Opties:
+  A. Every machine on the network
+  B. Only the machine with the address 10.20.30.10
+  C. Only the router
+  D. No machine, until the address is known
+Juist: A
+Feedback A: Correct. The destination of an ARP request is Broadcast, so every machine on the network receives it (see 1.4).
+Feedback B: Kali does not know yet where that machine is. That is why it has to ask everyone (see 1.4).
+Feedback C: ARP works inside one network and does not need a router (see 1.4).
+Feedback D: The request is the way to find out the address, so it has to reach the other machines first (see 1.4).
+```
+
+## 1.5 TCP and TLS up close
+
+The workstation now has an address and knows where the server is. To exchange data, it opens a connection, and for most websites it encrypts that connection. You read both steps in a capture, as in [1.4](#1_4).
+
 ### TCP: the three-way handshake
 
 Capture on `eth1` and request the intranet page again:
@@ -377,34 +422,14 @@ Now open the Client Hello in the packet details and look for the extension `serv
 
 Encryption hides what you send, not who you talk to. The IP addresses, the DNS query and the server name stay visible.
 
-[NIET GETEST] All commands in 1.4 and the number of packets they produce, on the current Kali image in VirtualBox.
+[NIET GETEST] All commands in 1.5 and the number of packets they produce, on the current Kali image in VirtualBox.
 
-What this means for you: each of these exchanges happens thousands of times a day on Halden's network. In module 6 you abuse three of them, and in module 9 you write rules that notice the abuse.
+What this means for you: when you look at encrypted traffic, you can still say who talked to whom, when and how much. For a defender that is often enough to spot something wrong.
 
-### Check yourself 1.4 – Everyday protocols
+### Check yourself 1.5 – TCP and TLS
 
 ```text
-Sectie: 1.4
-Type: ordenen
-Vraag: Put the packets in the order a workstation sends or receives them when it requests an address with DHCP.
-Volgorde:
-  Discover
-  Offer
-  Request
-  ACK
-Feedback: The workstation asks who hands out addresses, a server offers one, the workstation requests it and the server confirms (see 1.4).
-
-Sectie: 1.4
-Type: koppelen
-Vraag: Match each protocol with the question it answers.
-Paren:
-  ARP → Which MAC address belongs to this IP address?
-  DHCP → Which IP address can I use?
-  DNS → Which IP address belongs to this name?
-  TCP → Do you accept a connection on this port?
-Feedback: ARP links an IP address to a MAC address, DHCP hands out addresses, DNS translates names and the TCP handshake opens a connection (see 1.4).
-
-Sectie: 1.4
+Sectie: 1.5
 Type: meerdere antwoorden
 Vraag: A workstation opens `https://portal.example.com`. Someone captures the traffic. What can that person read? Choose all correct answers.
 Opties:
@@ -413,12 +438,12 @@ Opties:
   C. The password the user types on the page
   D. The content of the page
 Juist: A, B
-Feedback A: Correct. IP addresses are never encrypted by TLS (see 1.4).
-Feedback B: Correct. The name is visible in the DNS query and in the `server_name` extension of the Client Hello (see 1.4).
-Feedback C: The password travels inside the encrypted connection (see 1.4).
-Feedback D: The page is sent inside the encrypted connection (see 1.4).
+Feedback A: Correct. IP addresses are never encrypted by TLS (see 1.5).
+Feedback B: Correct. The name is visible in the DNS query and in the `server_name` extension of the Client Hello (see 1.5).
+Feedback C: The password travels inside the encrypted connection (see 1.5).
+Feedback D: The page is sent inside the encrypted connection (see 1.5).
 
-Sectie: 1.4
+Sectie: 1.5
 Type: meerkeuze
 Vraag: You send a SYN to port 22 of a server and get a SYN-ACK back. What do you know? Choose one answer.
 Opties:
@@ -427,13 +452,13 @@ Opties:
   C. The server runs Linux
   D. Port 22 is closed
 Juist: A
-Feedback A: Correct. A SYN-ACK is the second step of the handshake: the server accepts connections on that port (see 1.4).
-Feedback B: The handshake comes before any login. No credentials were sent yet (see 1.4).
-Feedback C: Every operating system answers this way. The handshake alone does not tell you which one it is (see 1.4).
-Feedback D: A closed port does not answer with a SYN-ACK (see 1.4).
+Feedback A: Correct. A SYN-ACK is the second step of the handshake: the server accepts connections on that port (see 1.5).
+Feedback B: The handshake comes before any login. No credentials were sent yet (see 1.5).
+Feedback C: Every operating system answers this way. The handshake alone does not tell you which one it is (see 1.5).
+Feedback D: A closed port does not answer with a SYN-ACK (see 1.5).
 ```
 
-## 1.5 tcpdump on a server
+## 1.6 tcpdump on a server
 
 So far you captured on Kali, with a window and a mouse. The interesting traffic at Halden & Co passes the file server, and that machine has no screen and no desktop. You need a tool that works in a terminal.
 
@@ -491,7 +516,7 @@ Now tcpdump waits. Open a second terminal in Kali and run `curl http://10.20.30.
 
 [NIET GETEST] The interface name and this output on `halden-srv01`. The line format was checked with tcpdump 4.99 on another machine.
 
-Each line is one packet: time, source address and port, destination address and port, and the TCP flags. `[S]` is a SYN, `[S.]` a SYN-ACK and `[.]` an ACK. The first three lines are the three-way handshake from [1.4](#1_4), this time seen from the server.
+Each line is one packet: time, source address and port, destination address and port, and the TCP flags. `[S]` is a SYN, `[S.]` a SYN-ACK and `[.]` an ACK. The first three lines are the three-way handshake from [1.5](#1_5), this time seen from the server.
 
 The general form is:
 
@@ -536,10 +561,10 @@ You now see the same conversation as in [1.3](#1_3), captured at the other end o
 
 What this means for you: you can now capture on any machine you can log in to, also when it has no desktop. From module 4 on, that machine is usually the firewall.
 
-### Check yourself 1.5 – tcpdump
+### Check yourself 1.6 – tcpdump
 
 ```text
-Sectie: 1.5
+Sectie: 1.6
 Type: koppelen
 Vraag: Match each tcpdump option with what it does.
 Paren:
@@ -547,9 +572,9 @@ Paren:
   -n → Shows addresses and ports as numbers
   -c → Stops after a number of packets
   -w → Writes the packets to a file
-Feedback: A typical capture on a server combines all four, followed by a capture filter (see 1.5).
+Feedback: A typical capture on a server combines all four, followed by a capture filter (see 1.6).
 
-Sectie: 1.5
+Sectie: 1.6
 Type: meerkeuze
 Vraag: You are logged in over SSH and run `sudo tcpdump -i enp0s3 -n`. The screen fills with lines without end. Why? Choose one answer.
 Opties:
@@ -558,12 +583,12 @@ Opties:
   C. The option `-n` repeats every packet
   D. The interface is broken
 Juist: A
-Feedback A: Correct. Every printed line travels to you over SSH, and that is new traffic to print. Add `not port 22` (see 1.5).
-Feedback B: A busy screen is not evidence of an attack. Look at the port first: it is 22, your own session (see 1.5).
-Feedback C: `-n` only stops tcpdump from translating addresses into names (see 1.5).
-Feedback D: A broken interface shows nothing. This one shows your own session (see 1.5).
+Feedback A: Correct. Every printed line travels to you over SSH, and that is new traffic to print. Add `not port 22` (see 1.6).
+Feedback B: A busy screen is not evidence of an attack. Look at the port first: it is 22, your own session (see 1.6).
+Feedback C: `-n` only stops tcpdump from translating addresses into names (see 1.6).
+Feedback D: A broken interface shows nothing. This one shows your own session (see 1.6).
 
-Sectie: 1.5
+Sectie: 1.6
 Type: meerkeuze
 Vraag: In tcpdump output you see `Flags [S.]`. Which packet is this? Choose one answer.
 Opties:
@@ -572,10 +597,10 @@ Opties:
   C. An ACK
   D. The end of a connection
 Juist: A
-Feedback A: Correct. `S` is SYN, and the dot stands for ACK (see 1.5).
-Feedback B: A SYN without ACK is shown as `[S]` (see 1.5).
-Feedback C: An ACK on its own is shown as `[.]` (see 1.5).
-Feedback D: The end of a connection is shown with `F` for FIN, or `R` for reset (see 1.5).
+Feedback A: Correct. `S` is SYN, and the dot stands for ACK (see 1.6).
+Feedback B: A SYN without ACK is shown as `[S]` (see 1.6).
+Feedback C: An ACK on its own is shown as `[.]` (see 1.6).
+Feedback D: The end of a connection is shown with `F` for FIN, or `R` for reset (see 1.6).
 ```
 
 ## Summary

@@ -94,7 +94,7 @@ Before you change anything on Halden's network, you record how it behaves today.
 
 Starting point: your lab as you left it after module 0. Restore the snapshot `m0-clean` on both machines if you are not sure of its state.
 
-Capture one exchange for each of the five protocols from [1.4](./module-1.md#1_4): ARP, DHCP, DNS, the TCP handshake and the TLS handshake. Save each one in its own file, named `m1-arp.pcapng`, `m1-dhcp.pcapng` and so on.
+Capture one exchange for each of the five protocols from [1.4](./module-1.md#1_4) and [1.5](./module-1.md#1_5): ARP, DHCP, DNS, the TCP handshake and the TLS handshake. Save each one in its own file, named `m1-arp.pcapng`, `m1-dhcp.pcapng` and so on.
 
 Answer with a table of five rows: the file name, the interface, the display filter that isolates the exchange, and the packet numbers of the exchange.
 
