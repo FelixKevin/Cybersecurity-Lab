@@ -1,6 +1,6 @@
 {
   "baseUrl": "https://canvas.ehb.be",
-  "courseId": 43147,
+  "courseId": null,
   "contentDir": "content",
   "template": "template.html",
   "cssFile": "css/style.css",
@@ -13,13 +13,13 @@
     "h4": "h6"
   },
   "backToTopText": "↑",
-  "backToTopLabel": "Terug naar boven",
-  "variantLabels": { "easy": "Easy", "medium": "Medium", "hard": "Hard", "home": "@Home", "extra": "Extra", "letop": "Let op" },
-  "figureLabel": "Figuur {n}.",
+  "backToTopLabel": "Back to top",
+  "variantLabels": { "easy": "Easy", "medium": "Medium", "hard": "Hard", "home": "@Home", "extra": "Extra", "letop": "Watch out" },
+  "figureLabel": "Figure {n}.",
   "calloutIcons": { "tip": "💡", "info": "ℹ️", "warning": "⚠️" },
   "topId": "ti_top",
-  "tocTitle": "Cursusoverzicht",
-  "takeawayPrefix": "Dit betekent voor jou:",
+  "tocTitle": "Course overview",
+  "takeawayPrefix": "What this means for you:",
   "inlineCodeClass": "mono",
   "code": {
     "highlight": true,
@@ -79,15 +79,15 @@
   },
   "quizzes": {
     "enabled": true,
-    "headingPattern": "^Test jezelf\\b",
-    "assignmentGroup": "Test jezelf",
+    "headingPattern": "^Check yourself\\b",
+    "assignmentGroup": "Check yourself",
     "omitFromFinalGrade": true,
     "pointsPerQuestion": 1,
     "shuffleChoices": true,
     "multiAnswerScoring": "PartialScore",
     "matchingScoring": "PartialDeep",
-    "instructions": "<p>Deze test telt niet mee voor je punten. Je kan hem zo vaak maken als je wil. Na het indienen zie je bij elke vraag of je antwoord juist is, met uitleg.</p>",
-    "metaText": "{n} vragen · telt niet mee · onbeperkt pogingen"
+    "instructions": "<p>This test does not count towards your grade. You can take it as often as you like. After submitting, you see for each question whether your answer is correct, with an explanation.</p>",
+    "metaText": "{n} questions · not graded · unlimited attempts"
   },
   "blocks": {
     "oefening": {
@@ -107,20 +107,10 @@
     },
     "quiz": {
       "logo": "assets/icons/quiz.svg",
-      "linkText": "Start de quiz",
+      "linkText": "Start the quiz",
       "linkTarget": "_blank"
     }
   },
-  "extraTocGroups": [
-    {
-      "title": "Voorbeeldexamen",
-      "links": [
-        {
-          "title": "Voorbeeldexamen",
-          "href": "https://canvas.ehb.be/courses/43147/pages/voorbeeldexamen"
-        }
-      ]
-    }
-  ],
-  "pdfLinkTitle": "Download deze cursus (PDF)"
+  "extraTocGroups": [],
+  "pdfLinkTitle": "Download this course (PDF)"
 }
