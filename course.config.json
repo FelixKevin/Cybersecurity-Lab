@@ -84,6 +84,7 @@
     "omitFromFinalGrade": true,
     "pointsPerQuestion": 1,
     "shuffleChoices": true,
+    "addAnswerHint": false,
     "multiAnswerScoring": "PartialScore",
     "matchingScoring": "PartialDeep",
     "instructions": "<p>This test does not count towards your grade. You can take it as often as you like. After submitting, you see for each question whether your answer is correct, with an explanation.</p>",
