@@ -1,0 +1,36 @@
+/* ==========================================================================
+   ti_ course template — MOBILE APP CSS
+   Theme Editor > Upload > "Mobile app CSS file".
+   Applies only to page content in the Canvas Student/Teacher apps (not mobile browsers;
+   those get canvas-theme.css). Screens are always narrow there, so no media query:
+   the overview always stacks above the content. !important beats the inlined styles.
+   ========================================================================== */
+
+.ti_page > .ti_overview {
+  float: none !important;
+  width: auto !important;
+  margin-bottom: 20px;
+}
+
+.ti_page > .ti_content {
+  margin-left: 0 !important;
+  max-width: none !important;
+}
+
+/* Long lines scroll inside the code block instead of wrapping mid-token */
+.ti_code, .ti_output {
+  white-space: pre !important;
+  overflow-x: auto;
+  font-size: 13px !important;
+}
+
+/* Slightly tighter side margins on a phone */
+.ti_section p { padding: 0 14px !important; }
+.ti_section h3, .ti_section h5, .ti_section h6, .ti_section ul, .ti_section ol,
+.ti_codeblock, .ti_callout, .ti_table_wrap, .ti_block_quiz { margin-left: 14px !important; margin-right: 14px !important; }
+
+/* Test jezelf: button below the title instead of beside it */
+.ti_block_quiz .ti_block_row { display: block !important; }
+.ti_block_quiz .ti_block_logo { display: block !important; float: left !important; }
+.ti_block_quiz .ti_block_body { display: block !important; overflow: hidden; }
+.ti_block_quiz .ti_block_action { display: block !important; width: auto !important; clear: both; text-align: left !important; padding: 10px 0 0 0 !important; }
