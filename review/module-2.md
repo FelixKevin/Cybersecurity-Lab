@@ -19,6 +19,7 @@ Written in English on the structure of the Schrijfwijzer (chapters 9, 11, 12A an
 | 802.1Q | the standard that describes the tag |
 | Open vSwitch | switch software for Linux |
 | port plan | the list of every switch port with its VLAN and what is connected to it |
+| parking VLAN | a VLAN without devices that is not on any trunk, for unused ports |
 
 "Flat network" was mentioned without bold in 0.1 and is introduced here. "DMZ" is used in 2.4 as the name of a zone and is introduced as a term in module 4.
 
@@ -30,6 +31,8 @@ Written in English on the structure of the Schrijfwijzer (chapters 9, 11, 12A an
 - **Addresses do not change in this module.** Kali and the server stay in 10.20.30.0/24 and are separated by VLAN only. The move to one range per zone is module 3.
 - **Zone plan:** Clients VLAN 10 (10.20.10.0/24), Servers VLAN 20 (10.20.20.0/24), DMZ VLAN 40 (10.20.40.0/24), Management VLAN 99 (10.20.99.0/24). VLAN 30 is skipped so that the old flat range 10.20.30.0/24 is not confused with a zone.
 - **The lab ends in a state where nothing crosses the zones.** That is deliberate and is said in the text; module 3 opens the crossings.
+- **2.1 has a short capture, added on request:** the server looks for an address that does not exist, and Kali receives the ARP request. It uses the SSH account from 1.6.
+- **Unused ports go to a parking VLAN (999), added on request.** It is on no trunk. The free desk port `port2` of `halden-sw01` is the example.
 - **Native VLAN is not covered here.** It is the topic of the @home exercise and returns with VLAN hopping in module 6.
 - **Switch administration is on the VM console** in this module. Remote management over VLAN 99 needs addresses and comes later.
 
@@ -46,15 +49,14 @@ Written in English on the structure of the Schrijfwijzer (chapters 9, 11, 12A an
 
 ## Open questions
 
-- 2.1 has no hands-on step. Add a short capture that shows a broadcast of another machine arriving on Kali, or leave it conceptual?
 - 2.3, step 4: changing the internal network of a running VM. If this is unreliable in VirtualBox 7.2, shut down `halden-sw01` first.
-- 2.5: unused ports. The text puts the free desk port in VLAN 10. Should there be a separate "parking" VLAN for unused ports, as is common practice?
 - The switches cannot hand over capture files until they have an address (C2 reads the file on the switch). Acceptable, or give the switches a management address already in this module?
 - Example solutions (O6) are not written yet.
 
 ## Markers
 
 - [CONTROLEREN] What you need: `halden-sw01.ova` does not exist yet.
+- [NIET GETEST] 2.1, Hear a question that was not meant for you: the capture on Kali and `halden-srv01`.
 - [CONTROLEREN] 2.2, Put a switch in your lab: the account `netadmin`, its password and the adapter names.
 - [CONTROLEREN] 2.3, Add the second switch: labels in steps 2 and 4 for VirtualBox 7.2.
 - [NIET GETEST] 2.3, See the tag: both captures on the appliances in VirtualBox.
@@ -66,6 +68,7 @@ All Open vSwitch commands in the text, quizzes and exercises were run in a simul
 - Flat switch: ping works. Both ports in VLAN 20: works. VLAN 10 against VLAN 20: 100% packet loss.
 - Trunk with `trunks=10,20` on both sides: works. Trunk with only VLAN 10: fails.
 - A port without `tag` and without `trunks` carries tagged frames of every VLAN.
+- The ARP capture in 2.1 is real output of the simulation: the server pings 10.20.30.99 and the other host receives the request.
 - The two tcpdump outputs in 2.3 are real output of that simulation (frame length 102 with tag, 98 without); times and MAC addresses were replaced by examples.
 - The output of `ovs-vsctl show` is real, with the line `datapath_type: netdev` removed and the ports put in order.
 

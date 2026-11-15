@@ -41,6 +41,35 @@ A network like that is a **flat network**: a network without internal borders. I
 
 Think back to the ARP request in [1.4](./module-1.md#1_4). Its destination was Broadcast, so every machine on the network received it. The group of devices that receive each other's broadcasts is a **broadcast domain**. At Halden & Co that is all of them: 25 workstations, the file server, the printer and the public web server.
 
+### Hear a question that was not meant for you
+
+You can see this in your lab, which is still flat. You need two terminals in Kali.
+
+1. In the first terminal, capture one ARP packet on the lab network:
+
+```bash
+sudo tcpdump -i eth1 -n -c 1 arp
+```
+
+2. In the second terminal, log in on the server and let it look for an address that does not exist:
+
+```bash
+ssh consultant@10.20.30.10
+ping -c 1 10.20.30.99
+```
+
+The ping fails, as it should. The first terminal now shows:
+
+```output
+14:26:31.954640 ARP, Request who-has 10.20.30.99 tell 10.20.30.10, length 28
+```
+
+[NIET GETEST] On Kali and `halden-srv01`. The output comes from a simulation of the same network.
+
+The server asked a question, and Kali received it. Kali was not the sender and not the target. On a flat network every workstation hears what every other device is looking for.
+
+### What an infected workstation can reach
+
 Now take the second fear of Nadia: ransomware. Someone at the front desk opens the wrong attachment. What can that workstation reach?
 
 | From the infected workstation | Reachable on a flat network? |
@@ -331,7 +360,7 @@ sudo ovs-vsctl set port port4 trunks=10
 The ping fails. VLAN 20 no longer crosses the cable. Set the trunk back to `trunks=10,20`.
 
 ::: warning
-**Watch out:** in Open vSwitch a port without `tag` and without `trunks` is a trunk port that carries every VLAN. A port you forgot to configure is the most generous port on the switch.
+**Watch out:** in Open vSwitch a port without `tag` and without `trunks` is a trunk port that carries every VLAN. A port you forgot to configure is the most generous port on the switch. In [2.5](#2_5) you give every unused port a safe place.
 :::
 
 What this means for you: list on every trunk only the VLANs that have devices on both sides. A VLAN that is not on the trunk cannot leak over it.
@@ -473,7 +502,7 @@ Write down what every port is for before you type a command. This table is the *
 | Switch | Port | Mode | VLAN | Connected to |
 | --- | --- | --- | --- | --- |
 | `halden-sw01` (office floor) | `port1` | Access | 10 | Workstation (Kali) |
-| | `port2` | Access | 10 | Workstation (free) |
+| | `port2` | Access | 999 | Not in use |
 | | `port3` | Access | 99 | Management |
 | | `port4` | Trunk | 10, 20, 40, 99 | `halden-sw02` |
 | `halden-sw02` (server room) | `port1` | Access | 20 | `halden-srv01` |
@@ -481,13 +510,21 @@ Write down what every port is for before you type a command. This table is the *
 | | `port3` | Access | 99 | Management |
 | | `port4` | Trunk | 10, 20, 40, 99 | `halden-sw01` |
 
+### Unused ports go to the parking VLAN
+
+`port2` of `halden-sw01` is a free desk. Nobody uses it today. A free port in the Clients zone is an invitation: anyone who plugs in a laptop is on the network of the workstations.
+
+A **parking VLAN** is a VLAN without devices that is not on any trunk. You put every unused port in it. A device on such a port has a link and reaches nothing. At Halden & Co the parking VLAN is 999.
+
+The day someone starts at that desk, you move the port to VLAN 10 and update the port plan. That is one command, and it is a decision instead of a default.
+
 ### Configure both switches
 
 On `halden-sw01`:
 
 ```bash
 sudo ovs-vsctl set port port1 tag=10
-sudo ovs-vsctl set port port2 tag=10
+sudo ovs-vsctl set port port2 tag=999
 sudo ovs-vsctl set port port3 tag=99
 sudo ovs-vsctl set port port4 trunks=10,20,40,99
 ```
@@ -516,7 +553,7 @@ d64098d6-936a-443c-b797-bc5dc5d6bd40
             tag: 10
             Interface port1
         Port port2
-            tag: 10
+            tag: 999
             Interface port2
         Port port3
             tag: 99
@@ -530,7 +567,7 @@ d64098d6-936a-443c-b797-bc5dc5d6bd40
     ovs_version: "3.3.9"
 ```
 
-Every port has either a `tag` or a `trunks` line. A port with neither is the forgotten port from [2.3](#2_3).
+Every port has either a `tag` or a `trunks` line. A port with neither is the forgotten port from [2.3](#2_3). VLAN 999 is on no trunk, so the parking VLAN stays inside each switch.
 
 Then test the behaviour. A test has an expected result that you write down before you run it.
 
@@ -591,6 +628,20 @@ Feedback C: A ping does not need a second attempt when the network is configured
 Feedback D: It shows more than that: the whole path through both switches and the trunk works (see 2.5).
 
 Sectie: 2.5
+Type: meerkeuze
+Vraag: A visitor plugs a laptop into a free desk port that is in the parking VLAN. What can the laptop reach? Choose one answer.
+Opties:
+  A. Nothing
+  B. The workstations, because the desk is on the office floor
+  C. Only the internet
+  D. Every VLAN, because the port is not in use
+Juist: A
+Feedback A: Correct. The parking VLAN has no other devices and is on no trunk (see 2.5).
+Feedback B: The place of the desk does not matter. The VLAN of the port decides, and that is not the VLAN of the workstations (see 2.5).
+Feedback C: The parking VLAN leads nowhere, also not to the internet (see 2.5).
+Feedback D: That is what happens with a port without configuration. A port in the parking VLAN has a `tag`, so it belongs to one VLAN (see 2.5).
+
+Sectie: 2.5
 Type: ordenen
 Vraag: Put the steps of building a segmented network in the order of this module.
 Volgorde:
@@ -617,7 +668,8 @@ New terms in this module:
 - **VLAN tag** and **802.1Q**: four extra bytes in a frame that hold the VLAN ID, and the standard that describes them;
 - **trunk port** and **trunk**: a port that carries tagged frames of several VLANs, and the link between two such ports;
 - **Open vSwitch**: switch software for Linux;
-- **port plan**: the list of every switch port with its VLAN and what is connected to it.
+- **port plan**: the list of every switch port with its VLAN and what is connected to it;
+- **parking VLAN**: a VLAN without devices and on no trunk, for unused ports.
 
 The rules to remember:
 
@@ -625,11 +677,12 @@ The rules to remember:
 - Ports in the same VLAN can exchange frames. Ports in different VLANs cannot, whatever their IP addresses are.
 - A trunk carries only the VLANs on its list. Put only the VLANs on it that both sides need.
 - Every zone has a reason you can say in one sentence.
+- Unused ports go to the parking VLAN.
 - Write the port plan first, then configure, then check both the configuration and the behaviour.
 
 ## Common mistakes
 
-**Leaving a port without configuration.** `port3` has no `tag` and no `trunks`, so in Open vSwitch it carries every VLAN. Give every port a `tag`, also the ones nobody uses yet.
+**Leaving a port without configuration.** `port3` has no `tag` and no `trunks`, so in Open vSwitch it carries every VLAN. Give every port a `tag`. Ports nobody uses go to the parking VLAN, 999.
 
 **Configuring one end of a trunk.** `halden-sw01` has `trunks=10,20` and `halden-sw02` was forgotten. Configure both ends with the same list, and check both with `ovs-vsctl show`.
 

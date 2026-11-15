@@ -127,11 +127,11 @@ Answer with a note of at most 120 words. It names each of her three fears from [
 
 These exercises are optional. They repeat the module at different levels.
 
-## X1 Move a desk (Easy) {#x1}
+## X1 A new colleague (Easy) {#x1}
 
-An accountant of Halden & Co moves to the free desk on `port2` of `halden-sw01`. A technician needs that port for a management laptop for one afternoon.
+A new accountant starts at Halden & Co, at the free desk on `port2` of `halden-sw01`. That port is in the parking VLAN.
 
-Answer with the command that puts `port2` in the Management zone, and the command that puts it back.
+Answer with the command that puts the port in the right zone, and the row of the port plan as it looks afterwards.
 
 ## X2 A zone for the printer (Medium) {#x2}
 
